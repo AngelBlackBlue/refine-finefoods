@@ -31,6 +31,7 @@ import { PaginationTotal, UserStatus } from "../../components";
 import { PropsWithChildren } from "react";
 import { useLocation } from "react-router-dom";
 
+
 export const CustomerList = ({ children }: PropsWithChildren) => {
   const go = useGo();
   const { pathname } = useLocation();
@@ -56,13 +57,14 @@ export const CustomerList = ({ children }: PropsWithChildren) => {
       initial: [
         {
           field: "id",
-          order: "desc",
+          order: "asc",
         },
       ],
     },
     syncWithLocation: true,
   });
 
+  
   const { isLoading, triggerExport } = useExport<IUser>({
     sorters,
     filters,
