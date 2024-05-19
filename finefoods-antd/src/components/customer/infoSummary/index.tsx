@@ -1,9 +1,9 @@
-import { Flex, Avatar, Typography, Button, Modal } from "antd";
-import { IdcardFilled} from "@ant-design/icons";
+import { Flex, Avatar, Typography, Button, Modal, Form, Input } from "antd";
+import { EyeOutlined, IdcardFilled} from "@ant-design/icons";
 import { IUser } from "../../../interfaces";
 // import { useGo, useNavigation } from "@refinedev/core";
 // import { useLocation } from "react-router-dom";
-import { useModal } from "@refinedev/antd";
+import { useModal} from "@refinedev/antd";
 
 type Props = {
   customer?: IUser;
@@ -53,8 +53,36 @@ export const CustomerInfoSummary = ({ customer }: Props) => {
        >
           Edit
       </Button>
-      <Modal {...modalProps}>
-         <p>Modal Content</p>
+      <Modal {...modalProps} footer={null}>
+         <p>Actualizar datos de usuario</p>
+         <Form onSubmit={onSubmit}>
+          <Form.Item           
+              name='name'
+              label={`#${customer?.id} `}
+              rules={[{ required: true }]}
+          >
+              <Input 
+                    defaultValue={customer?.fullName}                  
+              />
+          </Form.Item>
+          <Form.Item           
+              name='gsm'
+              label={
+                <span>
+                  <EyeOutlined /> {' '} Gsm no
+                </span>
+              }
+          > 
+              <Input 
+                    defaultValue={customer?.gsm}                  
+              />
+          </Form.Item>
+          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+              <Button type="primary" htmlType="submit">
+                  Submit
+              </Button>
+          </Form.Item>
+         </Form>
       </Modal>
         {/* <Button 
           icon={<IdcardFilled/>}
