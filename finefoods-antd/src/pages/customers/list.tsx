@@ -80,7 +80,7 @@ export const CustomerList = ({ children }: PropsWithChildren) => {
   });
 
   return (
-    <List
+    <List    
       breadcrumb={false}
       headerProps={{
         extra: <ExportButton onClick={triggerExport} loading={isLoading} />,
