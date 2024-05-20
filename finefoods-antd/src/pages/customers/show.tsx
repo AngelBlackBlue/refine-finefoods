@@ -15,7 +15,7 @@ export const CustomerShow = () => {
 
   const { data } = queryResult;
   const user = data?.data;
-
+  
   return (
     <Drawer
       open

@@ -1,37 +1,32 @@
-import { Flex, Avatar, Typography, Button, Modal, Form, Input } from "antd";
-import { EyeOutlined, IdcardFilled} from "@ant-design/icons";
+import { Flex, Avatar, Typography, Button, Modal, Input } from "antd";
+import { PhoneOutlined, EditOutlined} from "@ant-design/icons";
 import { IUser } from "../../../interfaces";
-// import { useGo, useNavigation } from "@refinedev/core";
-// import { useLocation } from "react-router-dom";
+
 import { useModal} from "@refinedev/antd";
+import { HttpError, useForm, useShow } from "@refinedev/core";
 
 type Props = {
   customer?: IUser;
 };
 
 export const CustomerInfoSummary = ({ customer }: Props) => {
-  // const go = useGo()
-  const { show, modalProps } = useModal();
-  // const {showUrl} = useNavigation()
-  // const { pathname } = useLocation();
 
-  // const handleButtonClick = () => {
-  //   if (customer?.id !== undefined) {
-  //     go({
-  //       to: `${showUrl("user", customer.id)}`,
-  //       query: {
-  //         to: pathname,
-  //       },
-  //       options: {
-  //         keepQuery: true,
-  //       },
-  //       type: "replace",
-  //     });
-  //   } else {
-  //     console.error("Customer ID is undefined");
-      
-  //   }
-  // };
+  const { show, modalProps } = useModal();
+
+  const { onFinish, mutationResult, queryResult } = useForm<IUser, HttpError>({
+    action: "edit",
+    resource: "users",
+    id: customer?.id 
+  })
+
+  const record = queryResult?.data?.data;
+
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formElement = event.target as HTMLFormElement; 
+    const data = Object.fromEntries(new FormData(formElement).entries());
+    onFinish({...data });
+  };
 
   return (
     <Flex align="center" gap={32}>
@@ -48,48 +43,54 @@ export const CustomerInfoSummary = ({ customer }: Props) => {
         </Typography.Title>
       </Flex>
       <Button 
-          icon={<IdcardFilled/>}
+          icon={<EditOutlined/>}
           onClick={show}
        >
           Edit
-      </Button>
-      <Modal {...modalProps} footer={null}>
-         <p>Actualizar datos de usuario</p>
-         <Form onSubmit={onSubmit}>
-          <Form.Item           
-              name='name'
-              label={`#${customer?.id} `}
-              rules={[{ required: true }]}
-          >
+      </Button> 
+      <Modal 
+      {...modalProps} 
+      footer={null}
+      >
+         <p>Actualización de datos del usuario: {`#${customer?.id} `}</p>
+         <form onSubmit={onSubmit} >
+         <Flex vertical  justify="center" gap={12}>
+           <Flex vertical>
+              <label htmlFor="fullName">Name</label>
               <Input 
-                    defaultValue={customer?.fullName}                  
+                  type="text" 
+                  id="fullName" 
+                  name="fullName" 
+                  defaultValue={record?.fullName}
               />
-          </Form.Item>
-          <Form.Item           
-              name='gsm'
-              label={
+           </Flex>
+          
+          <Flex vertical>
+           <label htmlFor="gsm">
+             {
                 <span>
-                  <EyeOutlined /> {' '} Gsm no
+                  <PhoneOutlined/> {' Gsm No '} 
                 </span>
-              }
-          > 
-              <Input 
-                    defaultValue={customer?.gsm}                  
-              />
-          </Form.Item>
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <Button type="primary" htmlType="submit">
-                  Submit
-              </Button>
-          </Form.Item>
-         </Form>
+             }
+            </label>
+           <Input 
+               type="text" 
+               id="gsm" 
+               name="gsm" 
+               defaultValue={record?.gsm}
+            />
+            </Flex>
+         
+            <Flex justify="center">
+            {mutationResult.isSuccess}            
+            <Button type="primary" htmlType="submit" >Submit</Button>
+            </Flex> 
+        
+          </Flex>
+         </form>
+    
       </Modal>
-        {/* <Button 
-          icon={<IdcardFilled/>}
-          onClick={handleButtonClick}
-        >
-          Edit
-        </Button> */}
+
     </Flex>
   );
 };
